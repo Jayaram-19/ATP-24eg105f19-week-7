@@ -1,0 +1,98 @@
+###register roles
+POST http://localhost:5000/auth/users
+Content-Type: application/json
+
+{
+  "firstName":"lokesh",
+  "lastName":"vakiti",
+  "email":"user@gmail.com",
+  "password":"user1234",
+  "role":"USER",
+  "profileImgUrl":""
+}
+
+###login
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "email":"admin1@gmail.com",
+  "password":"admin1"
+  
+}
+
+###logout
+GET http://localhost:5000/auth/logout
+
+
+###create new article
+POST http://localhost:5000/author-api/article
+Content-Type: application/json
+
+{
+  "author":"69b3caa1d3513a31246ea889",
+  "title":"Article-1 by author 1",
+  "category":"programming",
+  "content":"test article on programming"
+}
+
+###read articles
+GET http://localhost:5000/author-api/articles
+
+###update article
+PUT http://localhost:5000/author-api/article
+Content-Type: application/json
+
+{
+  "articleId":"69b3aadbbee861c3bd44d341",
+   "title":"Article-2 by author-1",
+   "category":"AI",
+   "content":"test article on AI and its updated"
+}
+
+###soft delete
+PATCH http://localhost:5000/author-api/article
+Content-Type: application/json
+
+{
+  "articleId":"69b3aadbbee861c3bd44d341",
+  "isArticleActive":false
+}
+
+
+###read articles of all authors
+GET http://localhost:5000/user-api/articles
+
+### Add comment by user to an article
+PUT http://localhost:5000/user-api/article
+Content-Type: application/json
+
+{
+  "articleId":"69b3cb59093681b41ce8315a",
+  "comment":"This article is very robust"
+}
+
+
+###change password
+PUT http://localhost:5000/auth/password
+Content-Type: application/json
+
+{
+  "currentPassword":"LokeshM",
+  "newPassword":"LokeshM1"
+}
+
+
+### Read all USERS & AUTHORS
+GET  http://localhost:5000/admin-api/users
+
+
+
+
+### Block or Activate User or Author
+PATCH http://localhost:5000/admin-api/users
+Content-Type: application/json
+
+{
+  "email":"user1@gmail.com"
+}
