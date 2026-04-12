@@ -1,0 +1,45 @@
+//register user
+POST http://localhost:5000/common-api/user
+Content-Type: application/json
+
+{
+ "firstName":"mani",
+ "lastName":"lagishetty",
+ "email":"mani@gmail.com",
+ "password":"12345",
+ "role":"USER"
+}
+
+###
+//user login
+POST http://localhost:5000/common-api/login
+Content-Type: application/json
+
+{
+  "email":"mani@gmail.com",
+  "password":"12345"
+}
+
+###
+//user logout
+POST http://localhost:5000/common-api/logout
+Content-Type: application/json
+
+
+### 
+//Read articles of all authors
+GET http://localhost:5000/user-api/articles
+
+
+### Add comment by user to an article
+PUT http://localhost:5000/user-api/articles
+Content-Type: application/json
+
+{
+ 
+  "articleId":"69b44e8710b7b8dbcfcb437c",
+  "comment":"This is useful article"
+}
+
+
+### 
