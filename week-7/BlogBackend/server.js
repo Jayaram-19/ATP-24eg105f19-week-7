@@ -10,7 +10,7 @@ import CookieParser from 'cookie-parser'
 config()
 const app=exp()
 app.use(cors({
-  origin:['http://localhost:5173'],
+   origin:['http://localhost:5173','https://atp-24eg105f19-week-7.vercel.app/'],
   credentials:true
 }))
 //add cookie parser middleware
