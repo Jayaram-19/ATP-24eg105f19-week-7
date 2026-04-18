@@ -4,7 +4,7 @@ import {verifyToken} from '../middlewares/verifyToken.js'
 export const userApp = exp.Router()
 
 //read all articles of all authors
-userApp.get('/articles',verifyToken("USER"),async (req,res)=>{
+userApp.get('/articles',verifyToken("USER","AUTHOR","ADMIN"),async (req,res)=>{
   //read all articles
   const articlesList = await articleModel.find({isArticleActive:true})
   //send res
@@ -12,7 +12,7 @@ userApp.get('/articles',verifyToken("USER"),async (req,res)=>{
 })
 
 //add comment by user to an article
-userApp.put('/article',verifyToken("USER"),async(req,res)=>{
+userApp.put('/article',verifyToken("USER","AUTHOR","ADMIN"),async(req,res)=>{
   //get body from req
   const  {articleId,comment}=req.body
   //check article
