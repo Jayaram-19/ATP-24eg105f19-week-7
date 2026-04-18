@@ -66,7 +66,7 @@ userApp.delete('/comment/:articleId/:commentId',verifyToken("USER","AUTHOR","ADM
     return res.status(403).json({message:"unauthorized to delete this comment"})
   }
   
-  articleDoc.comments.pull({_id: commentId});
+  commentDoc.deleteOne();
   await articleDoc.save();
   
   res.status(200).json({message:"comment deleted successfully",payload:articleDoc})
