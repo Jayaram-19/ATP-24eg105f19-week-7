@@ -58,7 +58,7 @@ function WriteArticles() {
         }
       );
 
-      if (res.status === 201) {
+      if (res.status === 200 || res.status === 201) {
         reset(); // ✅ clear form
         navigate("/author-profile/articles"); // ✅ correct route
       }
