@@ -50,7 +50,7 @@ function WriteArticles() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/author-api/article",
+        "https://blogapp-x0mm.onrender.com/author-api/article",
         formData,
         { 
           withCredentials: true,

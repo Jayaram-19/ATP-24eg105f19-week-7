@@ -12,7 +12,7 @@ export const useAuth = create((set) => ({
       //set loading true
       set(state=>({...state,loading:true}))
       //make api call
-      let res = await axios.post("http://localhost:5000/auth/login",userCred,{withCredentials:true})
+      let res = await axios.post("https://blogapp-x0mm.onrender.com/auth/login",userCred,{withCredentials:true})
       //update state
       if(res.status===200){
         set({currentUser:res.data?.payload,
@@ -37,7 +37,7 @@ export const useAuth = create((set) => ({
       //set loading state
 
       //make logout api req
-      let res = await axios.get("http://localhost:5000/auth/logout",{withCredentials:true})
+      let res = await axios.get("https://blogapp-x0mm.onrender.com/auth/logout",{withCredentials:true})
       //update state
       if(res.status===200){
         set({

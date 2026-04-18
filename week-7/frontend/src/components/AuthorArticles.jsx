@@ -34,7 +34,7 @@ function AuthorArticles() {
     setLoading(true);
 
     let res = await axios.get(
-      "http://localhost:5000/author-api/articles",
+      "https://blogapp-x0mm.onrender.com/author-api/articles",
       { withCredentials: true }
     );
 

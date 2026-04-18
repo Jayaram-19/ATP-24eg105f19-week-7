@@ -42,7 +42,7 @@ function Register() {
       }
 
       //make HTTP POST req to create user in backend
-      let res = await axios.post("http://localhost:5000/auth/users", formData, {
+      let res = await axios.post("https://blogapp-x0mm.onrender.com/auth/users", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
       //navigate to login
