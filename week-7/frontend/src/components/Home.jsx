@@ -1,10 +1,12 @@
 import { NavLink } from "react-router";
+import { useState } from "react";
 import { primaryBtn, secondaryBtn, pageWrapper } from "../styles/common";
 import { useAuth } from "../store/authStore";
 
 function Home() {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
   const user = useAuth((state) => state.currentUser);
+  const [authorMsg, setAuthorMsg] = useState("");
   return (
     <div className={pageWrapper}>
       <div className="flex flex-col items-center text-center mt-12 mb-24">
@@ -20,18 +22,27 @@ function Home() {
           A premium platform for authors and readers to connect, share knowledge, and build inspired communities through beautiful storytelling.
         </p>
         
-        <div className="flex gap-4">
-          <NavLink 
-            to={isAuthenticated && user?.role === "AUTHOR" ? "/author-profile/write-article" : "/register"} 
-            className={primaryBtn + " py-3 px-6 text-base"}
-          >
-            Start Writing Today
-          </NavLink>
-          {!isAuthenticated && (
-            <NavLink to="/login" className={secondaryBtn + " py-3 px-6 text-base"}>
-              Sign In
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex gap-4">
+            <NavLink 
+              to={isAuthenticated && user?.role === "AUTHOR" ? "/author-profile/write-article" : "/register"} 
+              className={primaryBtn + " py-3 px-6 text-base"}
+              onClick={(e) => {
+                if (isAuthenticated && user?.role !== "AUTHOR") {
+                  e.preventDefault();
+                  setAuthorMsg("You should be an author to write a blog!");
+                }
+              }}
+            >
+              Start Writing Today
             </NavLink>
-          )}
+            {!isAuthenticated && (
+              <NavLink to="/login" className={secondaryBtn + " py-3 px-6 text-base"}>
+                Sign In
+              </NavLink>
+            )}
+          </div>
+          {authorMsg && <p className="text-sm font-medium text-[#ff3b30] mt-1">{authorMsg}</p>}
         </div>
       </div>
       
