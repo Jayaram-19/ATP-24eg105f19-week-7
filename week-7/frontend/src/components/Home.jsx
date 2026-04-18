@@ -1,7 +1,9 @@
 import { NavLink } from "react-router";
 import { primaryBtn, secondaryBtn, pageWrapper } from "../styles/common";
+import { useAuth } from "../store/authStore";
 
 function Home() {
+  const isAuthenticated = useAuth((state) => state.isAuthenticated);
   return (
     <div className={pageWrapper}>
       <div className="flex flex-col items-center text-center mt-12 mb-24">
@@ -21,9 +23,11 @@ function Home() {
           <NavLink to="/register" className={primaryBtn + " py-3 px-6 text-base"}>
             Start Writing Today
           </NavLink>
-          <NavLink to="/login" className={secondaryBtn + " py-3 px-6 text-base"}>
-            Sign In
-          </NavLink>
+          {!isAuthenticated && (
+            <NavLink to="/login" className={secondaryBtn + " py-3 px-6 text-base"}>
+              Sign In
+            </NavLink>
+          )}
         </div>
       </div>
       
