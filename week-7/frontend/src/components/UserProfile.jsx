@@ -28,7 +28,7 @@ function UserProfile() {
             />
           ) : (
             <div className="w-16 h-16 rounded-full bg-[#0066cc]/10 text-[#0066cc] flex items-center justify-center text-xl font-semibold">
-              {currentUser?.firstName?.charAt(0).toUpperCase()}
+              {(currentUser?.firstName || "U").charAt(0).toUpperCase()}
             </div>
           )}
 

@@ -10,6 +10,8 @@ import EditArticle from './components/EditArticle'
 import WriteArticles from "./components/WriteArticles";
 import ArticleByID from "./components/ArticleByID";
 
+import Articles from "./components/Articles";
+
 function App() {
   const routerObj = createBrowserRouter([
     {
@@ -19,6 +21,10 @@ function App() {
         {
           path: "",
           element: <Home />,
+        },
+        {
+          path: "articles",
+          element: <Articles />,
         },
         {
           path: "register",
