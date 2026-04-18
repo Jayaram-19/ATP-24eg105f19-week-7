@@ -24,7 +24,7 @@ function Home() {
         <div className="flex flex-col items-center gap-2">
           <div className="flex gap-4">
             <NavLink 
-              to={isAuthenticated && user?.role === "AUTHOR" ? "/author-profile/write-article" : (isAuthenticated ? "/login" : "/register")} 
+              to={isAuthenticated && user?.role === "AUTHOR" ? "/author-profile/write-article" : "/register"} 
               className={primaryBtn + " py-3 px-6 text-base"}
               onClick={(e) => {
                 if (isAuthenticated && user?.role !== "AUTHOR") {
