@@ -63,7 +63,7 @@ function UserProfile() {
          
          <div className="mt-8 relative inline-block">
              <NavLink 
-               to="/" 
+               to="/articles" 
                className="bg-[#0066cc] text-white font-semibold py-2.5 px-6 rounded-full hover:bg-[#004499] transition-colors shadow-sm"
              >
                Explore Articles

@@ -22,14 +22,10 @@ function Home() {
         
         <div className="flex gap-4">
           <NavLink 
-            to={
-              isAuthenticated 
-                ? (user?.role === "AUTHOR" ? "/author-profile/write-article" : "/articles") 
-                : "/register"
-            } 
+            to={isAuthenticated && user?.role === "AUTHOR" ? "/author-profile/write-article" : "/register"} 
             className={primaryBtn + " py-3 px-6 text-base"}
           >
-            {isAuthenticated && user?.role !== "AUTHOR" ? "Explore Articles" : "Start Writing Today"}
+            Start Writing Today
           </NavLink>
           {!isAuthenticated && (
             <NavLink to="/login" className={secondaryBtn + " py-3 px-6 text-base"}>
