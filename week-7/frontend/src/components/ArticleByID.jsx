@@ -44,6 +44,9 @@ function ArticleByID() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
   useEffect(() => {
     if (article) return;
 
@@ -123,6 +126,41 @@ function ArticleByID() {
     if (res.status === 200) {
       toast.success(res.data.message);
       setArticle(res.data.payload);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Delete this comment?")) return;
+    try {
+      const res = await axios.delete(
+        `https://blogapp-x0mm.onrender.com/user-api/comment/${article._id}/${commentId}`,
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        toast.success("Comment deleted");
+        setArticle(res.data.payload);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete comment");
+    }
+  };
+
+  const handleUpdateComment = async (commentId) => {
+    if (!editingText.trim()) return;
+    try {
+      const res = await axios.put(
+        `https://blogapp-x0mm.onrender.com/user-api/comment/${article._id}/${commentId}`,
+        { comment: editingText },
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        toast.success("Comment updated");
+        setArticle(res.data.payload);
+        setEditingCommentId(null);
+        setEditingText("");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update comment");
     }
   };
 
@@ -213,7 +251,57 @@ function ArticleByID() {
               </div>
 
               {/* Comment */}
-              <p className={commentText}>{commentObj.comment}</p>
+              {editingCommentId === commentObj._id ? (
+                <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={editingText}
+                    onChange={(e) => setEditingText(e.target.value)}
+                    className={inputClass + " flex-1"}
+                    autoFocus
+                  />
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handleUpdateComment(commentObj._id)}
+                      className="bg-[#0066cc] text-white text-sm px-4 py-2 rounded-xl hover:bg-[#004499] transition"
+                    >
+                      Save
+                    </button>
+                    <button 
+                      onClick={() => {
+                          setEditingCommentId(null);
+                          setEditingText("");
+                      }}
+                      className="bg-[#e8e8ed] text-[#1d1d1f] text-sm px-4 py-2 rounded-xl hover:bg-[#d2d2d7] transition"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className={commentText}>{commentObj.comment}</p>
+              )}
+
+              {/* Edit/Delete Actions */}
+              {user?._id === commentObj.user && editingCommentId !== commentObj._id && (
+                <div className="flex gap-3 mt-3 justify-end border-t border-[#e8e8ed] pt-3">
+                   <button 
+                     onClick={() => {
+                       setEditingCommentId(commentObj._id);
+                       setEditingText(commentObj.comment);
+                     }}
+                     className="text-[#0066cc] text-xs font-semibold hover:underline"
+                   >
+                     Edit
+                   </button>
+                   <button 
+                     onClick={() => handleDeleteComment(commentObj._id)}
+                     className="text-[#ff3b30] text-xs font-semibold hover:underline"
+                   >
+                     Delete
+                   </button>
+                </div>
+              )}
             </div>
           );
         })}

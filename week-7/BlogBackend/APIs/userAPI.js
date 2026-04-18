@@ -29,5 +29,45 @@ userApp.put('/article',verifyToken("USER","AUTHOR","ADMIN"),async(req,res)=>{
   await articleDoc.save();
   //send res
   res.status(200).json({message:"comment added successfully.. ",payload:articleDoc})
+})
 
+//edit a comment
+userApp.put('/comment/:articleId/:commentId',verifyToken("USER","AUTHOR","ADMIN"),async(req,res)=>{
+  const { articleId, commentId } = req.params;
+  const { comment } = req.body;
+  
+  const articleDoc = await articleModel.findOne({_id:articleId,isArticleActive:true})
+  if(!articleDoc) return res.status(404).json({message:"article not found"})
+  
+  const commentDoc = articleDoc.comments.id(commentId);
+  if(!commentDoc) return res.status(404).json({message:"comment not found"})
+    
+  if(commentDoc.user.toString() !== req.user.id) {
+    return res.status(403).json({message:"unauthorized to edit this comment"})
+  }
+  
+  commentDoc.comment = comment;
+  await articleDoc.save();
+  
+  res.status(200).json({message:"comment updated successfully",payload:articleDoc})
+})
+
+//delete a comment
+userApp.delete('/comment/:articleId/:commentId',verifyToken("USER","AUTHOR","ADMIN"),async(req,res)=>{
+  const { articleId, commentId } = req.params;
+  
+  const articleDoc = await articleModel.findOne({_id:articleId,isArticleActive:true})
+  if(!articleDoc) return res.status(404).json({message:"article not found"})
+  
+  const commentDoc = articleDoc.comments.id(commentId);
+  if(!commentDoc) return res.status(404).json({message:"comment not found"})
+    
+  if(commentDoc.user.toString() !== req.user.id) {
+    return res.status(403).json({message:"unauthorized to delete this comment"})
+  }
+  
+  articleDoc.comments.pull({_id: commentId});
+  await articleDoc.save();
+  
+  res.status(200).json({message:"comment deleted successfully",payload:articleDoc})
 })
