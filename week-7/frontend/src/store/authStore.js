@@ -42,7 +42,7 @@ export const useAuth = create((set) => ({
       if(res.status===200){
         set({
           currentUser:null,
-
+          isAuthenticated: false
         })
       }
     } catch (err) {
