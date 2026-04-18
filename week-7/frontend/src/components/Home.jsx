@@ -4,6 +4,7 @@ import { useAuth } from "../store/authStore";
 
 function Home() {
   const isAuthenticated = useAuth((state) => state.isAuthenticated);
+  const user = useAuth((state) => state.currentUser);
   return (
     <div className={pageWrapper}>
       <div className="flex flex-col items-center text-center mt-12 mb-24">
@@ -20,7 +21,10 @@ function Home() {
         </p>
         
         <div className="flex gap-4">
-          <NavLink to="/register" className={primaryBtn + " py-3 px-6 text-base"}>
+          <NavLink 
+            to={isAuthenticated && user?.role === "AUTHOR" ? "/author-profile/write-article" : "/register"} 
+            className={primaryBtn + " py-3 px-6 text-base"}
+          >
             Start Writing Today
           </NavLink>
           {!isAuthenticated && (
