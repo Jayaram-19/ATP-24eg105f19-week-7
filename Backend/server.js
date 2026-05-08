@@ -26,6 +26,20 @@ app.use("/author-api", authorApp);
 app.use("/admin-api", adminApp);
 app.use("/auth", commonApp);
 
+// Root route — API status page
+app.get("/", (req, res) => {
+  res.send(`
+    <html>
+      <head><title>BlogApp API</title></head>
+      <body style="font-family:sans-serif;text-align:center;padding:60px;background:#f5f5f5;">
+        <h1 style="color:#0066cc;">BlogApp API</h1>
+        <p style="color:#333;font-size:18px;">🟢 Server is running successfully!</p>
+        <p style="color:#888;">Use the frontend at your Vercel URL to interact with the app.</p>
+      </body>
+    </html>
+  `);
+});
+
 //connect to db
 const connectDB = async () => {
   try {
