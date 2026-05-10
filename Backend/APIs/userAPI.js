@@ -4,7 +4,7 @@ import { ArticleModel } from "../models/articleModel.js";
 export const userApp = exp.Router();
 
 // Read articles of all authors
-userApp.get("/articles", verifyToken("USER"), async (req, res, next) => {
+userApp.get("/articles", verifyToken("USER", "AUTHOR", "ADMIN"), async (req, res, next) => {
   try {
     // read articles
     const articlesList = await ArticleModel.find({ isArticleActive: true }).sort({ createdAt: -1 });
@@ -16,7 +16,7 @@ userApp.get("/articles", verifyToken("USER"), async (req, res, next) => {
 });
 
 // Read a single article by ID (used when navigating directly to /article/:id)
-userApp.get("/article/:id", verifyToken("USER"), async (req, res, next) => {
+userApp.get("/article/:id", verifyToken("USER", "AUTHOR", "ADMIN"), async (req, res, next) => {
   try {
     const { id } = req.params;
     const article = await ArticleModel.findOne({ _id: id, isArticleActive: true }).populate(
