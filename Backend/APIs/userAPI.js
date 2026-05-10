@@ -32,31 +32,86 @@ userApp.get("/article/:id", verifyToken("USER"), async (req, res, next) => {
   }
 });
 
-// Add comment to an article
+// Add comment to an article (one comment per user per article)
 userApp.put("/articles", verifyToken("USER"), async (req, res, next) => {
   try {
-    // get body from req
     const { articleId, comment } = req.body;
-    // check article
+    const userId = req.user?.id;
+
     const articleDocument = await ArticleModel.findOne({
       _id: articleId,
       isArticleActive: true,
     }).populate("comments.user", "firstName lastName email");
 
-    // if article not found
     if (!articleDocument) {
       return res.status(404).json({ message: "Article not found" });
     }
-    // get user id
-    const userId = req.user?.id;
-    // add comment to comments array
+
+    // Check if user already commented
+    const alreadyCommented = articleDocument.comments.some(
+      (c) => c.user?._id?.toString() === userId || c.user?.toString() === userId
+    );
+    if (alreadyCommented) {
+      return res.status(409).json({ message: "You have already commented on this article. Edit your existing comment instead." });
+    }
+
     articleDocument.comments.push({ user: userId, comment: comment });
-    // save
     await articleDocument.save();
-    // re-populate so the response includes user info
     await articleDocument.populate("comments.user", "firstName lastName email");
-    // send res
+
     res.status(200).json({ message: "Comment added successfully", payload: articleDocument });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Edit own comment
+userApp.patch("/articles/comment/edit", verifyToken("USER"), async (req, res, next) => {
+  try {
+    const { articleId, commentId, comment } = req.body;
+    const userId = req.user?.id;
+
+    const articleDocument = await ArticleModel.findOne({ _id: articleId, isArticleActive: true });
+    if (!articleDocument) return res.status(404).json({ message: "Article not found" });
+
+    const commentObj = articleDocument.comments.id(commentId);
+    if (!commentObj) return res.status(404).json({ message: "Comment not found" });
+
+    if (commentObj.user?.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized to edit this comment" });
+    }
+
+    commentObj.comment = comment;
+    await articleDocument.save();
+    await articleDocument.populate("comments.user", "firstName lastName email");
+
+    res.status(200).json({ message: "Comment updated", payload: articleDocument });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Delete own comment
+userApp.delete("/articles/comment/delete", verifyToken("USER"), async (req, res, next) => {
+  try {
+    const { articleId, commentId } = req.body;
+    const userId = req.user?.id;
+
+    const articleDocument = await ArticleModel.findOne({ _id: articleId, isArticleActive: true });
+    if (!articleDocument) return res.status(404).json({ message: "Article not found" });
+
+    const commentObj = articleDocument.comments.id(commentId);
+    if (!commentObj) return res.status(404).json({ message: "Comment not found" });
+
+    if (commentObj.user?.toString() !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this comment" });
+    }
+
+    commentObj.deleteOne();
+    await articleDocument.save();
+    await articleDocument.populate("comments.user", "firstName lastName email");
+
+    res.status(200).json({ message: "Comment deleted", payload: articleDocument });
   } catch (err) {
     next(err);
   }

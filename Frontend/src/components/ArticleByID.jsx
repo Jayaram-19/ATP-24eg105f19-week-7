@@ -41,16 +41,16 @@ function ArticleByID() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // if article is transferred via state, use it
-    if (article) return;
+  // comment edit state
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingText, setEditingText] = useState("");
 
-    // otherwise, make api req to read that article by id
+  useEffect(() => {
+    if (article) return;
     const getArticle = async () => {
       setLoading(true);
-
       try {
-        const res = await axios.get(`\${import.meta.env.VITE_API_URL}/user-api/article/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/user-api/article/${id}`, {
           withCredentials: true,
         });
         setArticle(res.data.payload);
@@ -60,62 +60,84 @@ function ArticleByID() {
         setLoading(false);
       }
     };
-
     getArticle();
   }, [id]);
 
-  const formatDate = (date) => {
-    return new Date(date).toLocaleString("en-IN", {
+  const formatDate = (date) =>
+    new Date(date).toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
       dateStyle: "medium",
       timeStyle: "short",
     });
-  };
+
+  // check if current user already commented
+  const myComment = article?.comments?.find(
+    (c) => c.user?._id === user?._id || c.user?.email === user?.email
+  );
 
   // delete & restore article
   const toggleArticleStatus = async () => {
     const newStatus = !article.isArticleActive;
-    const confirmMsg = newStatus ? "Restore this article?" : "Delete this article?";
-    if (!window.confirm(confirmMsg)) return;
-
+    if (!window.confirm(newStatus ? "Restore this article?" : "Delete this article?")) return;
     try {
       const res = await axios.patch(
         import.meta.env.VITE_API_URL + "/author-api/articles",
         { articleId: article._id, isArticleActive: newStatus },
-        { withCredentials: true },
+        { withCredentials: true }
       );
       setArticle(res.data.payload);
       toast.success(res.data.message);
     } catch (err) {
-      const msg = err.response?.data?.message || "Operation failed";
-      toast.error(msg);
-      setError(msg);
+      toast.error(err.response?.data?.message || "Operation failed");
     }
   };
 
-  // edit article
-  const editArticle = (articleObj) => {
-    navigate("/edit-article", { state: articleObj });
-  };
+  // edit article navigate
+  const editArticle = (articleObj) => navigate("/edit-article", { state: articleObj });
 
-  // post comment by user
+  // post comment (blocked if already commented)
   const addComment = async (commentObj) => {
-    if (!commentObj.comment?.trim()) {
-      toast.error("Comment cannot be empty");
-      return;
-    }
+    if (!commentObj.comment?.trim()) { toast.error("Comment cannot be empty"); return; }
     commentObj.articleId = article._id;
     try {
-      let res = await axios.put(import.meta.env.VITE_API_URL + "/user-api/articles", commentObj, {
+      const res = await axios.put(import.meta.env.VITE_API_URL + "/user-api/articles", commentObj, {
         withCredentials: true,
       });
-      if (res.status === 200) {
-        setArticle(res.data.payload);
-        reset();
-        toast.success("Comment added!");
-      }
+      if (res.status === 200) { setArticle(res.data.payload); reset(); toast.success("Comment added!"); }
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add comment");
+    }
+  };
+
+  // save edited comment
+  const saveEditComment = async (commentId) => {
+    if (!editingText.trim()) { toast.error("Comment cannot be empty"); return; }
+    try {
+      const res = await axios.patch(
+        import.meta.env.VITE_API_URL + "/user-api/articles/comment/edit",
+        { articleId: article._id, commentId, comment: editingText },
+        { withCredentials: true }
+      );
+      setArticle(res.data.payload);
+      setEditingCommentId(null);
+      toast.success("Comment updated!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update comment");
+    }
+  };
+
+  // delete comment
+  const deleteComment = async (commentId) => {
+    if (!window.confirm("Delete your comment?")) return;
+    try {
+      const res = await axios.delete(
+        import.meta.env.VITE_API_URL + "/user-api/articles/comment/delete",
+        { data: { articleId: article._id, commentId }, withCredentials: true }
+      );
+      setArticle(res.data.payload);
+      toast.success("Comment deleted!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete comment");
     }
   };
 
@@ -128,13 +150,9 @@ function ArticleByID() {
       {/* Header */}
       <div className={articleHeader}>
         <span className={articleCategory}>{article.category}</span>
-
         <h1 className={`${articleMainTitle} uppercase`}>{article.title}</h1>
-
         <div className={articleAuthorRow}>
-          <div className={authorInfo}>
-            ✍️ {article.isArticleActive ? "Published" : "Deleted"}
-          </div>
+          <div className={authorInfo}>✍️ {article.isArticleActive ? "Published" : "Deleted"}</div>
           <div>{formatDate(article.createdAt)}</div>
         </div>
       </div>
@@ -145,18 +163,15 @@ function ArticleByID() {
       {/* AUTHOR actions */}
       {user?.role === "AUTHOR" && (
         <div className={articleActions}>
-          <button className={editBtn} onClick={() => editArticle(article)}>
-            Edit
-          </button>
-
+          <button className={editBtn} onClick={() => editArticle(article)}>Edit</button>
           <button className={deleteBtn} onClick={toggleArticleStatus}>
             {article.isArticleActive ? "Delete" : "Restore"}
           </button>
         </div>
       )}
 
-      {/* USER: add comment */}
-      {user?.role === "USER" && (
+      {/* USER: add comment — only shown if NOT already commented */}
+      {user?.role === "USER" && !myComment && (
         <div className="mt-10">
           <h3 className="text-sm font-semibold text-[#1d1d1f] mb-3">Leave a comment</h3>
           <form onSubmit={handleSubmit(addComment)} className="flex gap-3">
@@ -176,6 +191,13 @@ function ArticleByID() {
         </div>
       )}
 
+      {/* Already commented notice */}
+      {user?.role === "USER" && myComment && (
+        <div className="mt-10 p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-600">
+          ✅ You've already commented on this article. You can edit or delete your comment below.
+        </div>
+      )}
+
       {/* Comments */}
       <div className={commentsWrapper}>
         <h3 className="text-sm font-semibold text-[#1d1d1f] mb-1">
@@ -187,15 +209,17 @@ function ArticleByID() {
         )}
 
         {article.comments?.map((commentObj, index) => {
-          const name =
-            commentObj.user?.firstName
-              ? `${commentObj.user.firstName} ${commentObj.user.lastName || ""}`.trim()
-              : commentObj.user?.email || "User";
+          const name = commentObj.user?.firstName
+            ? `${commentObj.user.firstName} ${commentObj.user.lastName || ""}`.trim()
+            : commentObj.user?.email || "User";
           const firstLetter = name.charAt(0).toUpperCase();
+          const isMyComment =
+            commentObj.user?._id === user?._id || commentObj.user?.email === user?.email;
+          const isEditing = editingCommentId === commentObj._id;
 
           return (
-            <div key={index} className={commentCard}>
-              {/* Header */}
+            <div key={commentObj._id || index} className={commentCard}>
+              {/* Header row */}
               <div className={commentHeader}>
                 <div className={commentUserRow}>
                   <div className={avatar}>{firstLetter}</div>
@@ -204,10 +228,57 @@ function ArticleByID() {
                     <p className={commentTime}>{formatDate(commentObj.createdAt || new Date())}</p>
                   </div>
                 </div>
+
+                {/* Edit / Delete — only on own comment */}
+                {isMyComment && (
+                  <div className="flex gap-2 ml-auto">
+                    {!isEditing ? (
+                      <>
+                        <button
+                          onClick={() => { setEditingCommentId(commentObj._id); setEditingText(commentObj.comment); }}
+                          className="text-xs text-[#0066cc] border border-[#0066cc] px-3 py-1 rounded-full hover:bg-blue-50 transition"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteComment(commentObj._id)}
+                          className="text-xs text-red-500 border border-red-400 px-3 py-1 rounded-full hover:bg-red-50 transition"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setEditingCommentId(null)}
+                        className="text-xs text-gray-400 border border-gray-300 px-3 py-1 rounded-full hover:bg-gray-50 transition"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* Comment */}
-              <p className={commentText}>{commentObj.comment}</p>
+              {/* Comment text or inline edit input */}
+              {isEditing ? (
+                <div className="flex gap-2 mt-2">
+                  <input
+                    type="text"
+                    value={editingText}
+                    onChange={(e) => setEditingText(e.target.value)}
+                    className={inputClass}
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => saveEditComment(commentObj._id)}
+                    className="bg-[#0066cc] text-white px-4 py-1.5 rounded-full text-xs font-medium hover:bg-[#004499] transition whitespace-nowrap"
+                  >
+                    Save
+                  </button>
+                </div>
+              ) : (
+                <p className={commentText}>{commentObj.comment}</p>
+              )}
             </div>
           );
         })}
