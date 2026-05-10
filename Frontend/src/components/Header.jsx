@@ -51,6 +51,23 @@ function Header() {
             </NavLink>
           </li>
 
+          {/* ARTICLES */}
+          <li>
+            <NavLink
+              to="/"
+              className={() => navLinkClass}
+              onClick={(e) => {
+                // if already on home page, scroll to articles section smoothly
+                if (window.location.pathname === "/") {
+                  e.preventDefault();
+                  document.getElementById("articles-section")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+            >
+              Articles
+            </NavLink>
+          </li>
+
           {/* NOT LOGGED IN */}
           {!isAuthenticated && (
             <>

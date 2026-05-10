@@ -106,6 +106,7 @@ function Home() {
 
       {/* ── ARTICLES SECTION ── */}
       <section
+        id="articles-section"
         style={{
           background: "#f5f5f7",
           minHeight: "60vh",
