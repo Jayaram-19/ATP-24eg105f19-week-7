@@ -37,16 +37,16 @@ function ArticleByID() {
 
   const user = useAuth((state) => state.currentUser);
 
-  const [article, setArticle] = useState(location.state || null);
-  const [loading, setLoading] = useState(false);
+  const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // comment edit state
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingText, setEditingText] = useState("");
 
+  // Always fetch fresh from API to get populated comments
   useEffect(() => {
-    if (article) return;
     const getArticle = async () => {
       setLoading(true);
       try {
@@ -71,10 +71,13 @@ function ArticleByID() {
     });
 
   // check if current user already commented
-  // user.id comes from JWT token (not _id)
-  const myComment = article?.comments?.find(
-    (c) => c.user?._id?.toString() === user?.id || c.user?.email === user?.email
-  );
+  // handles both populated user objects and raw ObjectId strings
+  const myComment = article?.comments?.find((c) => {
+    const commentUserId =
+      c.user?._id?.toString() || // populated object
+      c.user?.toString();         // raw ObjectId string
+    return commentUserId === user?.id || c.user?.email === user?.email;
+  });
 
   // delete & restore article
   const toggleArticleStatus = async () => {
@@ -214,8 +217,13 @@ function ArticleByID() {
             ? `${commentObj.user.firstName} ${commentObj.user.lastName || ""}`.trim()
             : commentObj.user?.email || "User";
           const firstLetter = name.charAt(0).toUpperCase();
-          const isMyComment =
-            commentObj.user?._id?.toString() === user?.id || commentObj.user?.email === user?.email;
+          // handles both populated user objects and raw ObjectId strings
+          const isMyComment = (() => {
+            const commentUserId =
+              commentObj.user?._id?.toString() ||
+              commentObj.user?.toString();
+            return commentUserId === user?.id || commentObj.user?.email === user?.email;
+          })();
           const isEditing = editingCommentId === commentObj._id;
 
           return (

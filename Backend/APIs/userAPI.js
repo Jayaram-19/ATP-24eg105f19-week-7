@@ -85,9 +85,9 @@ userApp.patch("/articles/comment/edit", verifyToken("USER"), async (req, res, ne
 
     commentObj.comment = comment;
     await articleDocument.save();
-    await articleDocument.populate("comments.user", "firstName lastName email");
-
-    res.status(200).json({ message: "Comment updated", payload: articleDocument });
+    // Re-fetch from DB to ensure fully populated response
+    const updatedArticle = await ArticleModel.findById(articleId).populate("comments.user", "firstName lastName email");
+    res.status(200).json({ message: "Comment updated", payload: updatedArticle });
   } catch (err) {
     next(err);
   }
@@ -113,9 +113,9 @@ userApp.delete("/articles/comment/delete", verifyToken("USER"), async (req, res,
 
     commentObj.deleteOne();
     await articleDocument.save();
-    await articleDocument.populate("comments.user", "firstName lastName email");
-
-    res.status(200).json({ message: "Comment deleted", payload: articleDocument });
+    // Re-fetch from DB to ensure fully populated response
+    const updatedArticle = await ArticleModel.findById(articleId).populate("comments.user", "firstName lastName email");
+    res.status(200).json({ message: "Comment deleted", payload: updatedArticle });
   } catch (err) {
     next(err);
   }
