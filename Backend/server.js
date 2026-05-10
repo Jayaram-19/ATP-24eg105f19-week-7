@@ -12,9 +12,21 @@ config();
 //create express app
 const app = exp();
 //enable cors
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(cors({
-  origin:['http://localhost:5173'],
-  credentials:true
+  origin: (origin, callback) => {
+    // allow requests with no origin (mobile apps, curl, Render health checks)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS: origin not allowed'));
+  },
+  credentials: true
 }))
 //add cookie parser middeleware
 app.use(cookieParser())

@@ -104,10 +104,11 @@ commonApp.post("/login", async (req, res, next) => {
     );
 
     // set token to res header as httpOnly cookie
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie("token", signedToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
     });
     // remove password from user document
     let userObj = user.toObject();
@@ -123,10 +124,11 @@ commonApp.post("/login", async (req, res, next) => {
 // Route for Logout
 commonApp.get("/logout", (req, res) => {
   // delete token from cookie storage
+  const isProduction = process.env.NODE_ENV === 'production';
   res.clearCookie("token", {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   });
   // send res
   res.status(200).json({ message: "Logout success" });
