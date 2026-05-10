@@ -71,8 +71,9 @@ function ArticleByID() {
     });
 
   // check if current user already commented
+  // user.id comes from JWT token (not _id)
   const myComment = article?.comments?.find(
-    (c) => c.user?._id === user?._id || c.user?.email === user?.email
+    (c) => c.user?._id?.toString() === user?.id || c.user?.email === user?.email
   );
 
   // delete & restore article
@@ -214,7 +215,7 @@ function ArticleByID() {
             : commentObj.user?.email || "User";
           const firstLetter = name.charAt(0).toUpperCase();
           const isMyComment =
-            commentObj.user?._id === user?._id || commentObj.user?.email === user?.email;
+            commentObj.user?._id?.toString() === user?.id || commentObj.user?.email === user?.email;
           const isEditing = editingCommentId === commentObj._id;
 
           return (

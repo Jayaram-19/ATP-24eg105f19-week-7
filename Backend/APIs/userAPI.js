@@ -77,7 +77,9 @@ userApp.patch("/articles/comment/edit", verifyToken("USER"), async (req, res, ne
     const commentObj = articleDocument.comments.id(commentId);
     if (!commentObj) return res.status(404).json({ message: "Comment not found" });
 
-    if (commentObj.user?.toString() !== userId) {
+    // user field may be ObjectId or populated object
+    const commentUserId = commentObj.user?._id?.toString() || commentObj.user?.toString();
+    if (commentUserId !== userId) {
       return res.status(403).json({ message: "Not authorized to edit this comment" });
     }
 
@@ -103,7 +105,9 @@ userApp.delete("/articles/comment/delete", verifyToken("USER"), async (req, res,
     const commentObj = articleDocument.comments.id(commentId);
     if (!commentObj) return res.status(404).json({ message: "Comment not found" });
 
-    if (commentObj.user?.toString() !== userId) {
+    // user field may be ObjectId or populated object
+    const commentUserId = commentObj.user?._id?.toString() || commentObj.user?.toString();
+    if (commentUserId !== userId) {
       return res.status(403).json({ message: "Not authorized to delete this comment" });
     }
 
