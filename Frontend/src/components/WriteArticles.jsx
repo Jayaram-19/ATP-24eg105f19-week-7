@@ -32,8 +32,8 @@ function WriteArticles() {
   const submitArticle = async (articleObj) => {
     setLoading(true);
 
-    //add authorId to articleObj
-    articleObj.author = currentUser._id;
+    //add authorId to articleObj (handle both DB object and JWT token object)
+    articleObj.author = currentUser._id || currentUser.id;
     try {
       //set loading true
       setLoading(true);
