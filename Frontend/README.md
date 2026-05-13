@@ -2,7 +2,7 @@
 
 A modern, responsive web interface for the BlogApp platform, built with React and Vite. It offers a seamless experience for readers, writers, and administrators.
 
-## ✨ Features
+##  Features
 
 - **Interactive UI:** Built with React and styled using Tailwind CSS for a premium, responsive look.
 - **Role-Based Dashboards:** Unique interfaces and functionalities for Users, Authors, and Admins.
@@ -12,7 +12,7 @@ A modern, responsive web interface for the BlogApp platform, built with React an
 - **Secure Routing:** Protected routes to ensure users only access authorized pages.
 - **Form Handling:** Robust form validation and submission using React Hook Form.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Framework:** React 19
 - **Build Tool:** Vite
@@ -22,7 +22,7 @@ A modern, responsive web interface for the BlogApp platform, built with React an
 - **HTTP Client:** Axios
 - **Form Management:** React Hook Form
 
-## 📂 Project Structure
+##  Project Structure
 
 - `src/components/`: Reusable UI components and page layouts.
 - `src/store/`: Zustand stores for global state management.
@@ -50,7 +50,7 @@ A modern, responsive web interface for the BlogApp platform, built with React an
    npm run dev
    ```
 
-## 📱 Pages
+##  Pages
 
 - **Home:** Overview of latest and featured articles.
 - **Login/Register:** Secure entry points with validation.
