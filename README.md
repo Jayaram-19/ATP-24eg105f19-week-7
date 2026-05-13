@@ -1,5 +1,7 @@
 # BlogApp - Full Stack MERN Application
 
+![BlogApp Hero](./assets/hero-image.png)
+
 ## About the Project
 
 **BlogApp** is a sophisticated, full-stack MERN application designed to bridge the gap between content creators and readers. Unlike simple blogging platforms, this application implements a tiered access system with specialized roles for **Users, Authors, and Administrators**, ensuring a secure and organized environment for digital storytelling.
@@ -156,5 +158,36 @@ For quick setup and execution, use these commands:
 | **Install Dependencies** | `cd Frontend && npm install` |
 | **Run Development Server** | `cd Frontend && npm run dev` |
 | **Build for Production** | `cd Frontend && npm run build` |
+
+## 🔒 Security & Best Practices
+
+- **Stateless Auth:** Uses JWT (JSON Web Tokens) stored in secure, HTTP-only cookies to prevent XSS attacks.
+- **Data Protection:** Passwords are never stored in plain text; they are hashed using **BcryptJS** with a high salt round.
+- **Role Verification:** Backend middleware verifies the user's role before granting access to sensitive Author/Admin APIs.
+- **Environment Isolation:** Sensitive credentials (DB URLs, API keys) are strictly managed via `.env` files and never committed to version control.
+- **CORS Protection:** Cross-Origin Resource Sharing is configured to only allow requests from authorized frontend domains.
+
+## 🚀 Deployment Guide
+
+### Backend (Render)
+1. Create a new "Web Service" on Render.
+2. Connect your GitHub repository.
+3. Set the Build Command: `cd Backend && npm install`.
+4. Set the Start Command: `cd Backend && npm start`.
+5. Add all `.env` variables in the "Environment" tab.
+
+### Frontend (Vercel)
+1. Create a new project on Vercel.
+2. Select the `Frontend` folder as the root.
+3. Configure the Framework Preset to "Vite".
+4. Add `VITE_API_BASE_URL` in the Environment Variables section.
+5. Deploy.
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
+
+---
+*Created with ❤️ for the BlogApp Community.*
 
 
