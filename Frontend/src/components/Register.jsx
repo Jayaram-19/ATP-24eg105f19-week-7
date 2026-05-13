@@ -227,6 +227,7 @@ function Register() {
           </NavLink>
         </p>
       </div>
+
     </div>
   );
 }

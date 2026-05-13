@@ -1,16 +1,59 @@
-# React + Vite
+# BlogApp - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive web interface for the BlogApp platform, built with React and Vite. It offers a seamless experience for readers, writers, and administrators.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Interactive UI:** Built with React and styled using Tailwind CSS for a premium, responsive look.
+- **Role-Based Dashboards:** Unique interfaces and functionalities for Users, Authors, and Admins.
+- **State Management:** Efficient global state handling using Zustand.
+- **Article Writing:** Rich interface for authors to create and edit articles.
+- **Real-time Feedback:** Integrated with `react-hot-toast` for user notifications and feedback.
+- **Secure Routing:** Protected routes to ensure users only access authorized pages.
+- **Form Handling:** Robust form validation and submission using React Hook Form.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework:** React 19
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS 4
+- **State Management:** Zustand
+- **Routing:** React Router 7
+- **HTTP Client:** Axios
+- **Form Management:** React Hook Form
 
-## Expanding the ESLint configuration
+## 📂 Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `src/components/`: Reusable UI components and page layouts.
+- `src/store/`: Zustand stores for global state management.
+- `src/assets/`: Static assets like images and icons.
+- `src/styles/`: Global CSS and Tailwind configurations.
+- `App.jsx`: Main application routing and structure.
+
+## ⚙️ Setup & Installation
+
+1. **Navigate to the Frontend directory:**
+   ```bash
+   cd Frontend
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Environment Variables:**
+   Create a `.env` file in the `Frontend` directory:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000
+   ```
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+
+## 📱 Pages
+
+- **Home:** Overview of latest and featured articles.
+- **Login/Register:** Secure entry points with validation.
+- **User Profile:** Manage user details and reading history.
+- **Author Dashboard:** Interface for writing and managing articles.
+- **Admin Dashboard:** Control center for platform management.
