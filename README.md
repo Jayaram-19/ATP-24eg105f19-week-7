@@ -24,7 +24,7 @@ Built with performance and security in mind, BlogApp leverages modern technologi
 | **Cloudinary** | Image Hosting | Cloud-based service for optimized image storage, transformation, and fast delivery. |
 | **JWT** | Security | JSON Web Tokens for secure, stateless authentication across the platform. |
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 graph LR
