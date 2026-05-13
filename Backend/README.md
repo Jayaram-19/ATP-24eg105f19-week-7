@@ -2,7 +2,7 @@
 
 This is the backend server for the BlogApp, built using Node.js, Express, and MongoDB. It provides a robust API for managing users, authors, admins, and articles.
 
-## 🚀 Features
+## Features
 
 - **User Authentication:** Secure registration and login using BcryptJS for password hashing and JSON Web Tokens (JWT) for session management.
 - **Role-Based Access Control:** Distinct APIs and logic for Users, Authors, and Admins.
@@ -11,7 +11,7 @@ This is the backend server for the BlogApp, built using Node.js, Express, and Mo
 - **Security:** CORS configuration, environment variable protection, and secure cookie handling.
 - **Centralized Error Handling:** Robust middleware for consistent API error responses.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Runtime:** Node.js
 - **Framework:** Express.js
@@ -28,7 +28,7 @@ This is the backend server for the BlogApp, built using Node.js, Express, and Mo
 - `middlewares/`: Custom middleware functions (e.g., Token verification).
 - `config/`: Database and Cloudinary configuration.
 
-## ⚙️ Setup & Installation
+##  Setup & Installation
 
 1. **Clone the repository** (if not already done).
 2. **Navigate to the Backend directory:**
@@ -55,7 +55,7 @@ This is the backend server for the BlogApp, built using Node.js, Express, and Mo
    npm start
    ```
 
-## 🛤️ API Endpoints
+## API Endpoints
 
 | Endpoint | Description | Access |
 | :--- | :--- | :--- |
