@@ -1,6 +1,6 @@
 # BlogApp - Full Stack MERN Application
 
-## 📝 About the Project
+## About the Project
 
 **BlogApp** is a sophisticated, full-stack MERN application designed to bridge the gap between content creators and readers. Unlike simple blogging platforms, this application implements a tiered access system with specialized roles for **Users, Authors, and Administrators**, ensuring a secure and organized environment for digital storytelling.
 
@@ -11,7 +11,7 @@ The platform provides a seamless end-to-end experience:
 
 Built with performance and security in mind, BlogApp leverages modern technologies like **React 19, Tailwind CSS 4, and JWT-based authentication** to provide a premium user experience that is both fast and secure.
 
-## 🛠️ Tech Stack & Rationale
+##  Tech Stack & Rationale
 
 | Technology | Purpose | Why it is used? |
 | :--- | :--- | :--- |
@@ -24,7 +24,7 @@ Built with performance and security in mind, BlogApp leverages modern technologi
 | **Cloudinary** | Image Hosting | Cloud-based service for optimized image storage, transformation, and fast delivery. |
 | **JWT** | Security | JSON Web Tokens for secure, stateless authentication across the platform. |
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 graph LR
@@ -35,7 +35,7 @@ graph LR
     Backend -.-> Auth{JWT/Bcrypt}
 ```
 
-## 🌟 Key Features
+##  Key Features
 
 - **Multi-Role System:** Support for regular Users, Content Authors, and System Admins.
 - **Secure Authentication:** JWT-based authentication with secure cookie storage.
@@ -43,7 +43,7 @@ graph LR
 - **Responsive Design:** A mobile-first approach using Tailwind CSS.
 - **Image Support:** Integrated image uploading and hosting via Cloudinary.
 
-## 📂 Repository Structure
+##  Repository Structure
 
 ```text
 blogApp/
@@ -57,7 +57,7 @@ blogApp/
 └── README.md         # This file
 ```
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -81,7 +81,7 @@ blogApp/
    - Refer to [Frontend/README.md](./Frontend/README.md) for detailed configuration.
    - Run `npm install` and `npm run dev` in the `Frontend` folder.
 
-## 📊 Data Flow
+## Data Flow
 
 ### 1. Authentication Flow
 ```mermaid
@@ -157,5 +157,4 @@ For quick setup and execution, use these commands:
 | **Run Development Server** | `cd Frontend && npm run dev` |
 | **Build for Production** | `cd Frontend && npm run build` |
 
----
-*Created with ❤️ for the BlogApp Community.*
+
