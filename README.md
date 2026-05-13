@@ -125,5 +125,4 @@ For quick setup and execution, use these commands:
 | **Run Development Server** | `cd Frontend && npm run dev` |
 | **Build for Production** | `cd Frontend && npm run build` |
 
----
-*Created with ❤️ for the BlogApp Community.*
+
