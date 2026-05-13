@@ -108,6 +108,38 @@ graph TD
     E -->|Display Success| B
 ```
 
+### 3. Frontend Internal Flow
+```mermaid
+graph TD
+    App[App.jsx] --> Router[React Router 7]
+    Router --> Layout[RootLayout]
+    Layout --> Guard{ProtectedRoute}
+    Guard -->|Authenticated| Dash[Author/Admin Dashboard]
+    Guard -->|Guest| Home[Home / Login]
+    
+    subgraph StateManagement
+        Action[User Action] --> Store[Zustand Store]
+        Store --> API[Axios Base Instance]
+        API -->|Response| Store
+        Store --> UI[UI Components Update]
+    end
+```
+
+### 4. Backend Internal Flow
+```mermaid
+graph LR
+    Req[Inbound Request] --> MW[Middlewares: CORS, JSON, Cookie]
+    MW --> Route{API Router}
+    Route -->|/auth| Common[Common API]
+    Route -->|/user| UserAPI[User API]
+    Route -->|/author| AuthCheck[JWT Verify Middleware]
+    AuthCheck --> AuthorAPI[Author API]
+    
+    AuthorAPI --> Logic[Business Logic]
+    Logic --> DB[(MongoDB)]
+    DB --> Res[JSON Response]
+```
+
 ## ⌨️ Command Reference
 
 For quick setup and execution, use these commands:
