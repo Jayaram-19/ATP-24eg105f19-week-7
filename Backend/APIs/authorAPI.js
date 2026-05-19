@@ -12,19 +12,24 @@ authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), asy
     console.log("req.user:", req.user);
     console.log("req.body:", req.body);
     
-    // get articleObj from client
-    const articleObj = req.body;
+    // get article fields from client
+    const { title, category, content } = req.body;
     
-    if (!articleObj.title || !articleObj.category || !articleObj.content) {
+    if (!title || !category || !content) {
       return res.status(400).json({ message: "Missing required fields" });
     }
     
-    // assign author from verified token
-    articleObj.author = req.user.id;
-    console.log("Author ID:", articleObj.author);
+    const articleData = {
+      title,
+      category,
+      content,
+      author: req.user.id,
+    };
+    
+    console.log("Author ID:", articleData.author);
     
     // verify author exists in DB
-    const author = await userModel.findById(articleObj.author);
+    const author = await userModel.findById(articleData.author);
     if (!author) {
       return res.status(404).json({ message: "Invalid author" });
     }
@@ -36,7 +41,7 @@ authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), asy
     if (req.file) {
       try {
         const cloudResult = await uploadToCloudinary(req.file.buffer);
-        articleObj.imageUrl = cloudResult.secure_url;
+        articleData.imageUrl = cloudResult.secure_url;
       } catch (uploadErr) {
         console.error('Cloudinary upload error:', uploadErr);
         return res.status(500).json({ message: 'Image upload failed', error: uploadErr.message });
@@ -44,7 +49,7 @@ authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), asy
     }
 
     // create article Document
-    const articleDoc = new ArticleModel(articleObj);
+    const articleDoc = new ArticleModel(articleData);
     // save
     await articleDoc.save();
     // send res
