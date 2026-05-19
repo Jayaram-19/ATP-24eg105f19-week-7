@@ -8,7 +8,6 @@ function Home() {
   const { isAuthenticated, currentUser } = useAuth((s) => s);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
@@ -27,13 +26,9 @@ function Home() {
 
   const categories = ["all", ...new Set(articles.map((a) => a.category))];
 
-  const filtered = articles.filter((a) => {
-    const matchCat = selectedCategory === "all" || a.category === selectedCategory;
-    const matchSearch =
-      a.title.toLowerCase().includes(search.toLowerCase()) ||
-      a.content.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchSearch;
-  });
+  const filtered = articles.filter((a) => 
+    selectedCategory === "all" || a.category === selectedCategory
+  );
 
   const formatDate = (d) =>
     new Date(d).toLocaleDateString("en-IN", {
@@ -131,7 +126,7 @@ function Home() {
             </p>
           </div>
 
-          {/* Search + Filter */}
+          {/* Filter */}
           <div
             style={{
               display: "flex",
@@ -141,23 +136,6 @@ function Home() {
               justifyContent: "center",
             }}
           >
-            <input
-              type="text"
-              placeholder="🔍  Search articles…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: "1 1 260px",
-                maxWidth: 380,
-                padding: "10px 16px",
-                borderRadius: 12,
-                border: "1px solid #d2d2d7",
-                background: "#fff",
-                fontSize: 14,
-                outline: "none",
-                color: "#1d1d1f",
-              }}
-            />
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {categories.map((cat) => (
