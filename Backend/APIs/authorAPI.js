@@ -11,23 +11,25 @@ authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), asy
   try {
     // get articleObj from client
     const articleObj = req.body;
-    // get user from decoded token
-    let user = req.user;
-    // check author
-    let author = await userModel.findById(articleObj.author);
-
+    // assign author from verified token
+    articleObj.author = req.user.id;
+    // verify author exists in DB
+    const author = await userModel.findById(articleObj.author);
     if (!author) {
       return res.status(404).json({ message: "Invalid author" });
     }
-    // cross check emails
-    if (author.email != user.email) {
-      return res.status(403).json({ message: "You are not authorized" });
-    }
 
+    // Log request file presence
+    console.log('Received file:', req.file ? 'yes' : 'no');
     // upload image to Cloudinary if provided
     if (req.file) {
-      const cloudResult = await uploadToCloudinary(req.file.buffer);
-      articleObj.imageUrl = cloudResult.secure_url;
+      try {
+        const cloudResult = await uploadToCloudinary(req.file.buffer);
+        articleObj.imageUrl = cloudResult.secure_url;
+      } catch (uploadErr) {
+        console.error('Cloudinary upload error:', uploadErr);
+        return res.status(500).json({ message: 'Image upload failed', error: uploadErr.message });
+      }
     }
 
     // create article Document

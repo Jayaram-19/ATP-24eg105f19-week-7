@@ -129,12 +129,12 @@ function WriteArticles() {
                   "Only JPG/PNG allowed"
                 );
               },
+              onChange: (e) => {
+                const file = e.target.files?.[0];
+                if (file) setImagePreview(URL.createObjectURL(file));
+                else setImagePreview(null);
+              },
             })}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) setImagePreview(URL.createObjectURL(file));
-              else setImagePreview(null);
-            }}
           />
 
           {errors.imageUrl && <p className={errorClass}>{errors.imageUrl.message}</p>}
