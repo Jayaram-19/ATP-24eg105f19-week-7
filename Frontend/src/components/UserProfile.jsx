@@ -93,7 +93,9 @@ function UserProfile() {
           {/* Name */}
           <div>
             <p className="text-sm text-[#6e6e73]">Welcome back</p>
-            <h2 className="text-xl font-semibold text-[#1d1d1f]">{currentUser?.firstName}</h2>
+            <h2 className="text-xl font-semibold text-[#1d1d1f]">
+              {currentUser?.firstName} {currentUser?.lastName}
+            </h2>
           </div>
         </div>
 
