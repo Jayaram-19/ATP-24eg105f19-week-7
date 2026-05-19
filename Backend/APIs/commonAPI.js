@@ -48,7 +48,7 @@ commonApp.post("/users", upload.single("profileImageUrl"), async (req, res, next
     newUser.profileImageUrl = cloudinaryResult?.secure_url || "";
 
     // hash password and replace plain with hashed one
-    newUser.password = await hash(newUser.password, 12);
+    newUser.password = await hash(newUser.password, 10);
 
     // create New user document
     const newUserDoc = new userModel(newUser);
@@ -170,7 +170,7 @@ commonApp.put("/password", verifyToken("USER", "AUTHOR", "ADMIN"), async (req, r
     }
 
     // hash new password
-    user.password = await hash(newPassword, 12);
+    user.password = await hash(newPassword, 10);
     await user.save();
 
     res.status(200).json({ message: "Password changed successfully" });
