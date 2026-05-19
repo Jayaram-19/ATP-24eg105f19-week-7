@@ -22,7 +22,7 @@ function AuthorProfile() {
       <div className="bg-white border border-[#e8e8ed] rounded-3xl p-6 mb-8 shadow-sm flex items-center justify-between">
         {/* LEFT */}
         <div className="flex items-center gap-4">
-          {/* Avatar */}
+          {/* Avatar */} 
           {currentUser?.profileImageUrl ? (
             <img
               src={currentUser.profileImageUrl}

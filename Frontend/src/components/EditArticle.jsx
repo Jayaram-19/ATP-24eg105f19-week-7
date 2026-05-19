@@ -15,7 +15,7 @@ import {
   articlePageWrapper,
 } from "../styles/common";
 
-function EditArticle() {
+function EditArticle() { 
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();

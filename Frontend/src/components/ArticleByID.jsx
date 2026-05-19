@@ -79,6 +79,14 @@ function ArticleByID() {
     return commentUserId === user?.id || c.user?.email === user?.email;
   });
 
+  // check if current user is the author of this article
+  const isArticleAuthor = (() => {
+    const articleAuthorId =
+      article?.author?._id?.toString() ||
+      article?.author?.toString();
+    return articleAuthorId === user?.id || article?.author?.email === user?.email;
+  })();
+
   // delete & restore article
   const toggleArticleStatus = async () => {
     const newStatus = !article.isArticleActive;
@@ -165,7 +173,7 @@ function ArticleByID() {
       <div className={articleContent}>{article.content}</div>
 
       {/* AUTHOR actions */}
-      {user?.role === "AUTHOR" && (
+      {user?.role === "AUTHOR" && isArticleAuthor && (
         <div className={articleActions}>
           <button className={editBtn} onClick={() => editArticle(article)}>Edit</button>
           <button className={deleteBtn} onClick={toggleArticleStatus}>
@@ -174,8 +182,8 @@ function ArticleByID() {
         </div>
       )}
 
-      {/* USER: add comment — only shown if NOT already commented */}
-      {user?.role === "USER" && !myComment && (
+      {/* USER or Non-author: add comment — only shown if NOT already commented */}
+      {(user?.role === "USER" || (user?.role === "AUTHOR" && !isArticleAuthor)) && !myComment && (
         <div className="mt-10">
           <h3 className="text-sm font-semibold text-[#1d1d1f] mb-3">Leave a comment</h3>
           <form onSubmit={handleSubmit(addComment)} className="flex gap-3">
@@ -196,7 +204,7 @@ function ArticleByID() {
       )}
 
       {/* Already commented notice */}
-      {user?.role === "USER" && myComment && (
+      {(user?.role === "USER" || (user?.role === "AUTHOR" && !isArticleAuthor)) && myComment && (
         <div className="mt-10 p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-600">
           ✅ You've already commented on this article. You can edit or delete your comment below.
         </div>

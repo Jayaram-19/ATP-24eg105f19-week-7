@@ -33,7 +33,7 @@ userApp.get("/article/:id", verifyToken("USER", "AUTHOR", "ADMIN"), async (req, 
 });
 
 // Add comment to an article (one comment per user per article)
-userApp.put("/articles", verifyToken("USER"), async (req, res, next) => {
+userApp.put("/articles", verifyToken("USER", "AUTHOR"), async (req, res, next) => {
   try {
     const { articleId, comment } = req.body;
     const userId = req.user?.id;
@@ -66,7 +66,7 @@ userApp.put("/articles", verifyToken("USER"), async (req, res, next) => {
 });
 
 // Edit own comment
-userApp.patch("/articles/comment/edit", verifyToken("USER"), async (req, res, next) => {
+userApp.patch("/articles/comment/edit", verifyToken("USER", "AUTHOR"), async (req, res, next) => {
   try {
     const { articleId, commentId, comment } = req.body;
     const userId = req.user?.id;
@@ -94,7 +94,7 @@ userApp.patch("/articles/comment/edit", verifyToken("USER"), async (req, res, ne
 });
 
 // Delete own comment
-userApp.delete("/articles/comment/delete", verifyToken("USER"), async (req, res, next) => {
+userApp.delete("/articles/comment/delete", verifyToken("USER", "AUTHOR"), async (req, res, next) => {
   try {
     const { articleId, commentId } = req.body;
     const userId = req.user?.id;
