@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import RootLayout from "./components/RootLayout";
 import Home from "./components/Home";
+import Articles from "./components/Articles";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import UserProfile from "./components/UserProfile";
@@ -23,6 +24,10 @@ function App() {
         {
           path: "",
           element: <Home />,
+        },
+        {
+          path: "articles",
+          element: <Articles />,
         },
         {
           path: "register",
