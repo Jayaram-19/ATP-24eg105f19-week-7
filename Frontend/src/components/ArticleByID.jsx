@@ -76,7 +76,7 @@ function ArticleByID() {
     const commentUserId =
       c.user?._id?.toString() || // populated object
       c.user?.toString();         // raw ObjectId string
-    return commentUserId === user?.id || c.user?.email === user?.email;
+    return commentUserId === user?.id || commentUserId === user?._id || c.user?.email === user?.email;
   });
 
   // check if current user is the author of this article
@@ -84,7 +84,7 @@ function ArticleByID() {
     const articleAuthorId =
       article?.author?._id?.toString() ||
       article?.author?.toString();
-    return articleAuthorId === user?.id || article?.author?.email === user?.email;
+    return articleAuthorId === user?.id || articleAuthorId === user?._id || article?.author?.email === user?.email;
   })();
 
   // delete & restore article
