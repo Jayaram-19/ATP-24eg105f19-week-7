@@ -9,10 +9,20 @@ export const authorApp = exp.Router();
 // Write article (protected route)
 authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), async (req, res, next) => {
   try {
+    console.log("req.user:", req.user);
+    console.log("req.body:", req.body);
+    
     // get articleObj from client
     const articleObj = req.body;
+    
+    if (!articleObj.title || !articleObj.category || !articleObj.content) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    
     // assign author from verified token
     articleObj.author = req.user.id;
+    console.log("Author ID:", articleObj.author);
+    
     // verify author exists in DB
     const author = await userModel.findById(articleObj.author);
     if (!author) {
@@ -21,6 +31,7 @@ authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), asy
 
     // Log request file presence
     console.log('Received file:', req.file ? 'yes' : 'no');
+    
     // upload image to Cloudinary if provided
     if (req.file) {
       try {
@@ -39,6 +50,7 @@ authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), asy
     // send res
     res.status(201).json({ message: "Article published successfully" });
   } catch (err) {
+    console.error("Error in article creation:", err);
     next(err);
   }
 });

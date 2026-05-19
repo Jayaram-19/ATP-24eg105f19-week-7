@@ -34,20 +34,30 @@ function WriteArticles() {
     setLoading(true);
 
     //add authorId to articleObj (handle both DB object and JWT token object)
-    articleObj.author = currentUser._id || currentUser.id;
+    const authorId = currentUser._id || currentUser.id;
+    console.log("Author ID:", authorId);
+    console.log("Current user:", currentUser);
 
     try {
       setLoading(true);
 
       // Build multipart/form-data so the image file can be uploaded
       const formData = new FormData();
-      formData.append("author", articleObj.author);
+      formData.append("author", authorId);
       formData.append("title", articleObj.title);
       formData.append("category", articleObj.category);
       formData.append("content", articleObj.content);
       if (articleObj.imageUrl?.[0]) {
         formData.append("imageUrl", articleObj.imageUrl[0]);
       }
+
+      console.log("Form data prepared:", { 
+        author: authorId,
+        title: articleObj.title,
+        category: articleObj.category,
+        contentLength: articleObj.content?.length,
+        hasImage: !!articleObj.imageUrl?.[0]
+      });
 
       let res = await axios.post(
         import.meta.env.VITE_API_URL + "/author-api/article",
@@ -62,7 +72,8 @@ function WriteArticles() {
         navigate("../articles");
       }
     } catch (err) {
-       toast.error(err.response?.data?.error || "Failed to publish article");
+       console.error("Error publishing article:", err.response?.data || err);
+       toast.error(err.response?.data?.error || err.response?.data?.message || "Failed to publish article");
     } finally {
       setLoading(false);
     }

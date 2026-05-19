@@ -31,7 +31,9 @@ app.use(cors({
     }
     return callback(new Error('CORS: origin not allowed'));
   },
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 }))
 //add cookie parser middeleware
 app.use(cookieParser())
@@ -80,16 +82,26 @@ app.use((req, res, next) => {
 
 //Error handling middleware
 app.use((err, req, res, next) => {
-  console.log("error is ",err)
+  console.log("error is ", err)
   console.log("Full error:", JSON.stringify(err, null, 2));
+  
   //ValidationError
   if (err.name === "ValidationError") {
-    return res.status(400).json({ message: "error occurred", error: err.message });
+    return res.status(400).json({ message: "Validation error", error: err.message });
   }
-  //CastError
+  //CastError - invalid ObjectId
   if (err.name === "CastError") {
-    return res.status(400).json({ message: "error occurred", error: err.message });
+    return res.status(400).json({ message: "Invalid ID format", error: err.message });
   }
+  //JsonWebTokenError
+  if (err.name === "JsonWebTokenError") {
+    return res.status(401).json({ message: "Invalid token", error: err.message });
+  }
+  //TokenExpiredError
+  if (err.name === "TokenExpiredError") {
+    return res.status(401).json({ message: "Token expired", error: err.message });
+  }
+  
   const errCode = err.code ?? err.cause?.code ?? err.errorResponse?.code;
   const keyValue = err.keyValue ?? err.cause?.keyValue ?? err.errorResponse?.keyValue;
 
@@ -97,11 +109,11 @@ app.use((err, req, res, next) => {
     const field = Object.keys(keyValue)[0];
     const value = keyValue[field];
     return res.status(409).json({
-      message: "error occurred",
+      message: "Duplicate entry",
       error: `${field} "${value}" already exists`,
     });
   }
 
   //send server side error
-  res.status(500).json({ message: "error occurred", error: "Server side error" });
+  res.status(500).json({ message: "Server error", error: err.message || "Server side error" });
 });
