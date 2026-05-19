@@ -169,6 +169,21 @@ function ArticleByID() {
         </div>
       </div>
 
+      {/* Cover Image */}
+      {article.imageUrl && (
+        <img
+          src={article.imageUrl}
+          alt={article.title}
+          style={{
+            width: "100%",
+            maxHeight: 420,
+            objectFit: "cover",
+            borderRadius: 16,
+            marginBottom: "2rem",
+          }}
+        />
+      )}
+
       {/* Content */}
       <div className={articleContent}>{article.content}</div>
 

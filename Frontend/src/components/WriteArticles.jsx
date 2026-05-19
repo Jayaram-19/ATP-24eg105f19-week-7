@@ -19,6 +19,7 @@ import { useAuth } from "../store/authStore";
 function WriteArticles() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
   const currentUser = useAuth((state) => state.currentUser);
 
   const {
@@ -34,16 +35,31 @@ function WriteArticles() {
 
     //add authorId to articleObj (handle both DB object and JWT token object)
     articleObj.author = currentUser._id || currentUser.id;
+
     try {
-      //set loading true
       setLoading(true);
-      //make POST req to save new article
-      let res = await axios.post(import.meta.env.VITE_API_URL + "/author-api/article", articleObj, { withCredentials: true });
-      //navigate to AuthorArticles
+
+      // Build multipart/form-data so the image file can be uploaded
+      const formData = new FormData();
+      formData.append("author", articleObj.author);
+      formData.append("title", articleObj.title);
+      formData.append("category", articleObj.category);
+      formData.append("content", articleObj.content);
+      if (articleObj.imageUrl?.[0]) {
+        formData.append("imageUrl", articleObj.imageUrl[0]);
+      }
+
+      let res = await axios.post(
+        import.meta.env.VITE_API_URL + "/author-api/article",
+        formData,
+        { withCredentials: true }
+      );
+
       if (res.status === 201) {
-        toast.success("Article published successfully")
+        toast.success("Article published successfully");
+        reset();
+        setImagePreview(null);
         navigate("../articles");
-        // navigate("./author-profile/articles");
       }
     } catch (err) {
        toast.error(err.response?.data?.error || "Failed to publish article");
@@ -97,6 +113,49 @@ function WriteArticles() {
           {errors.category && <p className={errorClass}>{errors.category.message}</p>}
         </div>
 
+        {/* Cover Image (optional) */}
+        <div className={formGroup}>
+          <label className={labelClass}>Cover Image (optional)</label>
+
+          <input
+            type="file"
+            accept="image/png, image/jpeg"
+            className={inputClass}
+            {...register("imageUrl", {
+              validate: (files) => {
+                if (!files?.[0]) return true; // optional
+                return (
+                  ["image/png", "image/jpeg"].includes(files[0].type) ||
+                  "Only JPG/PNG allowed"
+                );
+              },
+            })}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) setImagePreview(URL.createObjectURL(file));
+              else setImagePreview(null);
+            }}
+          />
+
+          {errors.imageUrl && <p className={errorClass}>{errors.imageUrl.message}</p>}
+
+          {/* Preview */}
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Cover preview"
+              style={{
+                marginTop: 10,
+                width: "100%",
+                maxHeight: 220,
+                objectFit: "cover",
+                borderRadius: 10,
+                border: "1px solid #e8e8ed",
+              }}
+            />
+          )}
+        </div>
+
         {/* Content */}
         <div className={formGroup}>
           <label className={labelClass}>Content</label>
@@ -128,4 +187,4 @@ function WriteArticles() {
   );
 }
 
-export default WriteArticles;
+export default WriteArticles;

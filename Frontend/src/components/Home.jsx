@@ -203,6 +203,21 @@ function Home() {
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
+                  {/* Cover image */}
+                  {article.imageUrl && (
+                    <img
+                      src={article.imageUrl}
+                      alt={article.title}
+                      style={{
+                        width: "100%",
+                        height: 160,
+                        objectFit: "cover",
+                        borderRadius: 12,
+                        marginBottom: 4,
+                      }}
+                    />
+                  )}
+
                   {/* Category tag */}
                   <span
                     style={{

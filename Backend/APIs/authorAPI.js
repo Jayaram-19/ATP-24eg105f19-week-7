@@ -2,10 +2,12 @@ import exp from "express";
 import { userModel } from "../models/userModel.js";
 import { ArticleModel } from "../models/articleModel.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
+import { upload } from "../config/multer.js";
+import { uploadToCloudinary } from "../config/cloudinaryUpload.js";
 export const authorApp = exp.Router();
 
 // Write article (protected route)
-authorApp.post("/article", verifyToken("AUTHOR"), async (req, res, next) => {
+authorApp.post("/article", verifyToken("AUTHOR"), upload.single("imageUrl"), async (req, res, next) => {
   try {
     // get articleObj from client
     const articleObj = req.body;
@@ -20,6 +22,12 @@ authorApp.post("/article", verifyToken("AUTHOR"), async (req, res, next) => {
     // cross check emails
     if (author.email != user.email) {
       return res.status(403).json({ message: "You are not authorized" });
+    }
+
+    // upload image to Cloudinary if provided
+    if (req.file) {
+      const cloudResult = await uploadToCloudinary(req.file.buffer);
+      articleObj.imageUrl = cloudResult.secure_url;
     }
 
     // create article Document
