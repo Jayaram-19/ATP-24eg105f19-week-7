@@ -1,4 +1,4 @@
-# BlogApp - Full Stack MERN Application
+# BlogApp - Full Stack MERN Application 
 
 **BlogApp** is a sophisticated, full-stack MERN application designed to bridge the gap between content creators and readers. Unlike simple blogging platforms, this application implements a tiered access system with specialized roles for **Users, Authors, and Administrators**, ensuring a secure and organized environment for digital storytelling.
 
